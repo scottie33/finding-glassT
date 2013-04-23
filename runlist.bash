@@ -9,7 +9,7 @@ Tinterval=50
 for i in `echo minimization nvthightemp deformation annealing`; do 
 	#echo "$i.in"
 	echo " running $i now..." 
-	mpirun -np ${PNUM} ${EXEC} < $i.in 
+	#mpirun -np ${PNUM} ${EXEC} < $i.in 
 	echo " $i ended."
 done
 
@@ -27,8 +27,8 @@ for ((i=${Thigh};i>=${Tlow};i=$i-${Tinterval})); do
 		echo " loading .in from annealing ... "
 		echo "variable fname index annealing" >> npttemperature.in
 	else
-		echo " loading .in from $lastT ... ".
-		echo "variable fname index npt2zero.$lastT" >> npttemperature.in
+		echo " loading .in from nvtlowtemp.$lastT ... ".
+		echo "variable fname index nvtlowtemp.$lastT" >> npttemperature.in
 	fi
 	echo "variable simname index npt2zero.$i" >> npttemperature.in
 	echo "variable temperature index $i" >> npttemperature.in
@@ -37,13 +37,28 @@ for ((i=${Thigh};i>=${Tlow};i=$i-${Tinterval})); do
 	echo " ----------------------------------"
 	cat npttemperature.in
 	echo " ----------------------------------"
-	mpirun -np ${PNUM} ${EXEC} < npt2zero.$i.in  
+	#mpirun -np ${PNUM} ${EXEC} < npt2zero.$i.in  
 	echo " ouput volume - temperature ... "
 	cp npt2zero.$i.vol.dat npt2zero.vol.dat
-	python < avevol.py
+	#python < avevol.py
 	cp volume.dat volume.$i.dat
 	cat volume.$i.dat >> volume-temp.dat
+	echo " "
 	echo " NPT:T=$i ended successfully."
+	echo " running NVT:T=$i now ..."  
+	echo "# <- temporarily created for glass-T routine ->" > nvttemperature.in
+	echo " loading .in from npt2zero.$i ... ".
+	echo "variable fname index npt2zero.$i" >> nvttemperature.in
+	echo "variable simname index nvtlowtemp.$i" >> nvttemperature.in
+	echo "variable temperature index $i" >> nvttemperature.in
+	cp nvtlowtemp.in nvtlowtemp.$i.in
+	echo " nvtlowtemp.$i.in created:"
+	echo " ----------------------------------"
+	cat nvttemperature.in
+	echo " ----------------------------------"
+	#mpirun -np ${PNUM} ${EXEC} < nvtlowtemp.$i.in 
+	echo " NVT:T=$i ended successfully."
+	echo ""
 done
 
 echo "inp='volume-temp.dat'" > tempdata.gpl
