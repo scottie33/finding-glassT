@@ -39,6 +39,7 @@ for ((i=${Thigh};i>=${Tlow};i=$i-${Tinterval})); do
 	echo " ----------------------------------"
 	mpirun -np ${PNUM} ${EXEC} < npt2zero.$i.in  
 	echo " ouput volume - temperature ... "
+	cp npt2zero.$i.vol.dat npt2zero.vol.dat
 	python < avevol.py
 	cp volume.dat volume.$i.dat
 	cat volume.$i.dat >> volume-temp.dat
