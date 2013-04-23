@@ -1,0 +1,4 @@
+# <- temporarily created for glass-T routine ->
+variable fname index npt2zero.600
+variable simname index npt2zero.550
+variable temperature index 550
