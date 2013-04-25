@@ -9,7 +9,7 @@
 # VARIABLES
 include nvttemperature.in
 variable damping index 20
-variable runtimes index 500000
+variable runtimes index 750000
 
 # Initialization
 units		real
@@ -35,9 +35,9 @@ include pairfile_no_soft
 
 #####################################################
 # Equilibration Stage 5 (NVT dynamics at 600 K after relaxation)
-fix         1st all nvt temp ${temperature} ${temperature} ${damping} # higher the viscosity, lower damping 
+fix         1st all nvt temp ${Htemperature} ${Ltemperature} ${damping} # higher the viscosity, lower damping 
 fix   		4th all momentum 1 linear 1 1 1 angular
-thermo_style	custom step temp press epair ebond vol pxx pyy pzz lx ly lz
+thermo_style    custom step temp press epair ebond pe ke etotal lx ly lz pxx pxy vol
 thermo          100
 timestep	5	
 dump		1 all dcd  1000 ${simname}.dcd

@@ -8,8 +8,9 @@
 
 # VARIABLES
 include npttemperature.in
-variable damping index 20
-variable runtimes index 1000
+variable Tdamping index 20
+variable Pdamping index 100
+variable runtimes index 1500000
 
 # Initialization
 units		real
@@ -35,14 +36,14 @@ include pairfile_no_soft
 
 #####################################################
 # Equilibration Stage 4 (NPT dynamics at 600 K)
-fix   1st all npt temp ${temperature} ${temperature} ${damping} iso 0.987 0.987 ${damping} drag 1 
+fix   1st all npt temp ${temperature} ${temperature} ${Tdamping} iso 0.987 0.987 ${Pdamping} drag 1 
                                                                          # drag added to damp osillation by thermostat
 fix   2nd all momentum 1 linear 1 1 1 angular
 variable tmpvo equal "vol"
 variable tmptp equal "temp"
 fix   def1 all print 100 "${tmptp} ${tmpvo}" file ${simname}.vol.dat screen no
 
-thermo_style    custom step temp press epair ebond pe ke etotal lx pxx pxy vol
+thermo_style    custom step temp press epair ebond pe ke etotal lx ly lz pxx pxy vol
 thermo      100
 timestep	2
 dump 1 all dcd  1000 ${simname}.dcd
